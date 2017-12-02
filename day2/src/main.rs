@@ -12,7 +12,6 @@ where
     buf.lines()
         .map(|l| l.expect("Could not parse line"))
         .collect()
-
 }
 
 fn get_checksum(lines: Vec<String>) -> i32 {
