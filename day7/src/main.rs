@@ -98,6 +98,34 @@ fn get_right_weigth() -> i32 {
     0
 }
 
+fn get_weight(prog: &str, programs: &HashMap<String, Program>) -> (i32, i32, bool) {
+    let mut children_val: Vec<(i32, i32, i32)> = vec![];
+    let program = &programs[prog];
+    if !programs[&program.name].has_children() {
+        return (program.value, 0, true);
+    }
+    for child in &program.children {
+        let (val, child_val, is_balanced) = get_weight(child, &programs);
+        // If child is not balanced, return the right weigth of the child
+        if !is_balanced {
+            return (val, 0, is_balanced);
+        }
+        children_val.push((val, child_val, val + child_val));
+    }
+    let children_sum: Vec<i32> = children_val.iter().map(|&(_, _, val)| val).collect();
+    let mut should_value = 0;
+    let mut where_not = 0;
+    for i in 0..children_sum.len() - 1 {
+        for j in i + 1..children_sum.len() {
+            if children_sum[i] == children_sum[j] {
+                should_value = children_sum[i]
+            }
+        }
+    }
+
+    (0, 0, true)
+}
+
 fn main() {
     let lines = lines_from_file("input.txt");
     let root = get_root(&lines);
